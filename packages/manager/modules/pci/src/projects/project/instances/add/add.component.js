@@ -3,6 +3,9 @@ import template from './add.html';
 
 export default {
   bindings: {
+    addInstanceSuccessMessage: '<',
+    addInstancesSuccessMessage: '<',
+    disablePrivateNetworks: '<',
     goBack: '<',
     projectId: '@',
     privateNetworks: '<',
@@ -11,6 +14,7 @@ export default {
     cancelLink: '<',
     prices: '<',
     quotaLink: '<',
+    selectedCategory: '@?',
   },
   controller,
   template,

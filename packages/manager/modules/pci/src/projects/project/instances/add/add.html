@@ -20,6 +20,7 @@
             data-service-name="{{:: $ctrl.projectId }}"
             data-selected-flavor="$ctrl.model.flavorGroup"
             data-display-selected-flavor="$ctrl.displaySelectedFlavor"
+            data-selected-category="{{:: $ctrl.selectedCategory }}"
         >
         </pci-project-flavors-list>
     </oui-step-form>
@@ -280,14 +281,17 @@
                     data-ng-if="!$ctrl.showUserData"
                     data-variant="secondary"
                     data-type="button"
-                    data-text="{{ 'pci_projects_project_instances_add_script_add_label' | translate }}"
                     data-on-click="$ctrl.showUserData = true"
                 >
+                    <span
+                        data-translate="pci_projects_project_instances_add_script_add_label"
+                    ></span>
                 </oui-button>
             </oui-field>
         </div>
 
         <oui-field
+            data-ng-if="!$ctrl.disablePrivateNetworks"
             data-label="{{ :: 'pci_projects_project_instances_add_privateNetwork_label' | translate }}"
             data-size="xl"
         >

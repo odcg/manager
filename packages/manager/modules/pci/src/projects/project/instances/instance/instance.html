@@ -446,10 +446,9 @@
                             data-on-click="$ctrl.gotToNetworks()"
                         >
                         </oui-action-menu-item>
-                        <oui-action-menu-item
-                            text="{{:: 'pci_projects_project_instances_instance_private_networks_action_attach_label' | translate }}"
-                            data-on-click="$ctrl.attachPrivateNetwork()"
-                        >
+                        <oui-action-menu-item text="{{:: 'pci_projects_project_instances_instance_private_networks_action_attach_label' | translate }}"
+                            data-disabled="$ctrl.disablePrivateNetworks"
+                            data-on-click="$ctrl.attachPrivateNetwork()">
                         </oui-action-menu-item>
                     </oui-action-menu>
                 </oui-tile-definition>
