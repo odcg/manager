@@ -1,8 +1,8 @@
-<div class="text-center" data-ng-if="$ctrl.isLoading">
+<div class="text-center" data-ng-if="$ctrl.isValidating">
     <oui-spinner></oui-spinner>
 </div>
 
-<div data-ng-if="!$ctrl.isLoading">
+<div data-ng-if="!$ctrl.isValidating">
     <form name="$ctrl.ovhForm" novalidate>
         <oui-field
             data-label="{{:: 'dedicatedCloud_datacenter_secondary_pcc_name' | translate }}"

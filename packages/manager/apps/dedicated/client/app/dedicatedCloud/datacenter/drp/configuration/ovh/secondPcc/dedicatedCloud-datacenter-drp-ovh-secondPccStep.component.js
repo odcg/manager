@@ -7,12 +7,9 @@ export default {
     currentUser: '<',
     drpInformations: '=',
     setDisableSuccessAlertPreference: '<',
-    storeZertoOptionOrderInUserPref: '<',
+    setupConfiguration: '<',
 
     displayErrorMessage: '<',
-    displayInfoMessage: '<',
-    displaySuccessMessage: '<',
-    goToPccDashboard: '<',
     goToPreviousStep: '<',
   },
   controller,

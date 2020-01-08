@@ -30,13 +30,79 @@ export default /* @ngInject */ ($stateProvider) => {
       selectedDrpType: /* @ngInject */ ($transition$) => ({
         id: get($transition$.params().selectedDrpType, 'id', null),
       }),
+      setupConfiguration: /* @ngInject */ (
+        $q,
+        $translate,
+        $timeout,
+        $window,
+        dedicatedCloudDrp,
+        displayErrorMessage,
+        displayInfoMessage,
+        displaySuccessMessage,
+        goToPccDashboard,
+        setDisableSuccessAlertPreference,
+        storeZertoOptionOrderInUserPref,
+        DEDICATED_CLOUD_CONSTANTS,
+      ) => (drpInformations) =>
+        dedicatedCloudDrp
+          .enableDrp(
+            drpInformations,
+            drpInformations.primaryPcc.generation !==
+              DEDICATED_CLOUD_CONSTANTS.pccNewGeneration,
+          )
+          .then((enableDrp) => {
+            const storeOptionPromise =
+              enableDrp.url !== undefined
+                ? storeZertoOptionOrderInUserPref(drpInformations, enableDrp)
+                : $q.when();
+
+            const { hasAutoPay } = enableDrp;
+            if (!hasAutoPay) {
+              $window.open(enableDrp.url, '_blank');
+            }
+
+            return $q
+              .all([
+                storeOptionPromise,
+                setDisableSuccessAlertPreference(
+                  drpInformations.primaryPcc.serviceName,
+                  false,
+                ),
+              ])
+              .then(() => goToPccDashboard(true))
+              .then(() => {
+                if (!hasAutoPay) {
+                  displaySuccessMessage(
+                    `${$translate.instant(
+                      'dedicatedCloud_datacenter_drp_confirm_order',
+                      { billUrl: enableDrp.url },
+                    )}`,
+                  );
+                } else {
+                  displayInfoMessage(`
+                    ${$translate.instant(
+                      'dedicatedCloud_datacenter_drp_confirm_creation_pending',
+                    )} ${$translate.instant(
+                    'dedicatedCloud_datacenter_drp_confirm_creation_pending_task',
+                  )}
+                `);
+                }
+              });
+          })
+          .catch((error) => {
+            displayErrorMessage(
+              `${$translate.instant(
+                'dedicatedCloud_datacenter_drp_confirm_create_error',
+              )} ${get(error, 'data.message', error.message)}`,
+            );
+          }),
       storedDrpInformations: /* @ngInject */ (
         currentService,
         dedicatedCloudDrp,
       ) =>
         dedicatedCloudDrp.checkForZertoOptionOrder(currentService.serviceName),
-      /* @ngInject */
-      storeZertoOptionOrderInUserPref: (dedicatedCloudDrp) => (
+
+      storeZertoOptionOrderInUserPref: /* @ngInject */ (dedicatedCloudDrp) => (
         drpInformations,
         enableDrp,
       ) =>
@@ -45,14 +111,11 @@ export default /* @ngInject */ ($stateProvider) => {
           enableDrp,
         ),
 
-      /* @ngInject */
-      displayErrorMessage: (Alerter) => (errorMessage) =>
+      displayErrorMessage: /* @ngInject */ (Alerter) => (errorMessage) =>
         Alerter.error(errorMessage, 'dedicatedCloudDatacenterDrpAlert'),
-      /* @ngInject */
-      displayInfoMessage: (Alerter) => (message) =>
+      displayInfoMessage: /* @ngInject */ (Alerter) => (message) =>
         Alerter.set('alert-info', message, null, 'dedicatedCloud_alert'),
-      /* @ngInject */
-      displaySuccessMessage: (Alerter) => (successMessage) =>
+      displaySuccessMessage: /* @ngInject */ (Alerter) => (successMessage) =>
         Alerter.success(successMessage, 'dedicatedCloud_alert'),
 
       goToConfiguration: /* @ngInject */ ($state) => (
