@@ -27,7 +27,7 @@ export default /* @ngInject */ ($translate, $filter) => {
     if (upto.test(wucDuration)) {
       if (uptoDuration.test(wucDuration)) {
         [, , d] = wucDuration.match(uptoDuration);
-        return $translate.instant('duration_upto', {
+        return $translate.instant('duration_upto_prorata', {
           t0: dateFormat ? $filter('date')(d, dateFormat) : d,
         });
       }
