@@ -11,6 +11,7 @@ export default class ExchangeAccount {
     exchangeStates,
     exchangeVersion,
     OvhHttp,
+    OvhApiMsServices,
   ) {
     this.Exchange = Exchange;
     this.exchangeAccountTypes = exchangeAccountTypes;
@@ -19,6 +20,7 @@ export default class ExchangeAccount {
     this.exchangeStates = exchangeStates;
     this.exchangeVersion = exchangeVersion;
     this.OvhHttp = OvhHttp;
+    this.OvhApiMsServices = OvhApiMsServices;
 
     this.EVENTS = {
       CHANGE_STATE: 'exchange.account.CHANGE_STATE',
@@ -94,12 +96,20 @@ export default class ExchangeAccount {
    * @param {object} userPrincipalName
    */
   createMfa(serviceName, userPrincipalName) {
-    return this.OvhHttp.post(
-      `/msServices/${serviceName}/account/${userPrincipalName}/mfa`,
-      {
-        rootPath: 'apiv6',
-      },
-    );
+    return this.OvhApiMsServices.Account()
+      .Mfa()
+      .v6()
+      .create(
+        {
+          serviceName,
+          userPrincipalName,
+        },
+        {},
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
   }
 
   /**
@@ -107,13 +117,20 @@ export default class ExchangeAccount {
    * @param {object} userPrincipalName
    */
   enableMfa(serviceName, userPrincipalName) {
-    return this.OvhHttp.post(
-      `/msServices/${serviceName}/account/${userPrincipalName}/mfa/enable`,
-      {
-        rootPath: 'apiv6',
-        broadcast: this.Exchange.events.accountsChanged,
-      },
-    );
+    return this.OvhApiMsServices.Account()
+      .Mfa()
+      .v6()
+      .enable(
+        {
+          serviceName,
+          userPrincipalName,
+        },
+        {},
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
   }
 
   /**
@@ -121,13 +138,20 @@ export default class ExchangeAccount {
    * @param {object} userPrincipalName
    */
   deleteMfa(serviceName, userPrincipalName) {
-    return this.OvhHttp.delete(
-      `/msServices/${serviceName}/account/${userPrincipalName}/mfa`,
-      {
-        rootPath: 'apiv6',
-        broadcast: this.Exchange.events.accountsChanged,
-      },
-    );
+    return this.OvhApiMsServices.Account()
+      .Mfa()
+      .v6()
+      .delete(
+        {
+          serviceName,
+          userPrincipalName,
+        },
+        {},
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
   }
 
   /**
@@ -135,16 +159,22 @@ export default class ExchangeAccount {
    * @param {object} userPrincipalName
    */
   disableMfa(serviceName, userPrincipalName, period) {
-    return this.OvhHttp.post(
-      `/msServices/${serviceName}/account/${userPrincipalName}/mfa/disable`,
-      {
-        rootPath: 'apiv6',
-        data: {
+    return this.OvhApiMsServices.Account()
+      .Mfa()
+      .v6()
+      .disable(
+        {
+          serviceName,
+          userPrincipalName,
+        },
+        {
           period,
         },
-        broadcast: this.Exchange.events.accountsChanged,
-      },
-    );
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
   }
 
   /**
@@ -152,13 +182,48 @@ export default class ExchangeAccount {
    * @param {object} userPrincipalName
    */
   resetMfa(serviceName, userPrincipalName) {
-    return this.OvhHttp.post(
-      `/msServices/${serviceName}/account/${userPrincipalName}/mfa/reset`,
-      {
-        rootPath: 'apiv6',
-        broadcast: this.Exchange.events.accountsChanged,
-      },
-    );
+    return this.OvhApiMsServices.Account()
+      .Mfa()
+      .v6()
+      .reset(
+        {
+          serviceName,
+          userPrincipalName,
+        },
+        {},
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
+  }
+
+  createMfaOnAllAccount(serviceName) {
+    return this.OvhApiMsServices.v6()
+      .createMfaOnAllUsers(
+        {
+          serviceName,
+        },
+        {},
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
+  }
+
+  deleteMfaOnAllAccounts(serviceName) {
+    return this.OvhApiMsServices.v6()
+      .removeMfaOnAllUsers(
+        {
+          serviceName,
+        },
+        {},
+      )
+      .$promise.then((data) => {
+        this.Exchange.refreshViews('Accounts', 'Tasks');
+        return data;
+      });
   }
 
   /**

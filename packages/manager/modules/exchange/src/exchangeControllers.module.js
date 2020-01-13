@@ -53,6 +53,7 @@ import ExchangeRemoveAccountCtrl from './account/remove/account-remove.controlle
 import ExchangeUpdateAccountCtrl from './account/update/account-update.controller';
 import ExchangeUpgrade300GCtrl from './account/upgrade-300g/account-upgrade-300g.controller';
 import ExchangeUpdateRenewCtrl from './billing/account-renew/renew.controller';
+import ExchangeAccountMfaCtrl from './account/mfa/account-mfa.controller';
 import ExchangeTabDiagnosticsCtrl from './diagnostic/diagnostic.controller';
 import ExchangeAddDisclaimerCtrl from './disclaimer/add/disclaimer-add.controller';
 import ExchangeDisclaimerCtrl from './disclaimer/disclaimer.controller';
@@ -167,6 +168,7 @@ angular
   .controller('ExchangeUpdateAccountCtrl', ExchangeUpdateAccountCtrl)
   .controller('ExchangeUpgrade300GCtrl', ExchangeUpgrade300GCtrl)
   .controller('ExchangeUpdateRenewCtrl', ExchangeUpdateRenewCtrl)
+  .controller('ExchangeAccountMfaCtrl', ExchangeAccountMfaCtrl)
   .controller('ExchangeTabDiagnosticsCtrl', ExchangeTabDiagnosticsCtrl)
   .controller('ExchangeAddDisclaimerCtrl', ExchangeAddDisclaimerCtrl)
   .controller('ExchangeDisclaimerCtrl', ExchangeDisclaimerCtrl)

@@ -9,6 +9,7 @@ export default class ExchangeTabsCtrl {
     $location,
     Exchange,
     $translate,
+    $timeout,
     messaging,
     navigation,
     exchangeVersion,
@@ -19,13 +20,14 @@ export default class ExchangeTabsCtrl {
       $location,
       Exchange,
       $translate,
+      $timeout,
       messaging,
       navigation,
       exchangeVersion,
       exchangeServiceInfrastructure,
     };
 
-    const $routerParams = Exchange.getParams();
+    this.$routerParams = Exchange.getParams();
 
     $scope.services = this.services;
     $scope.kebabCase = (text) => kebabCase(text);
@@ -35,7 +37,7 @@ export default class ExchangeTabsCtrl {
       if (Exchange.value.serverDiagnostic.individual2010) {
         this.defaultTab = 'ACCOUNT';
         this.tabs = ['ACCOUNT'];
-        this.selectedTab = 'ACCOUNT';
+        this.currentTab = this.defaultTab;
         this.dropdownMenuItems = null;
       } else {
         this.defaultTab = 'INFORMATION';
@@ -53,7 +55,7 @@ export default class ExchangeTabsCtrl {
 
         this.tabs.push('DIAGNOSTIC');
         this.tabs.push('SECURITY');
-        this.selectedTab = 'INFORMATION';
+        this.currentTab = 'INFORMATION';
         this.dropdownMenuItems = {
           title: $translate.instant('navigation_more'),
           items: [
@@ -95,14 +97,24 @@ export default class ExchangeTabsCtrl {
       }
 
       if (
-        $routerParams.tab &&
-        this.tabs.indexOf($routerParams.tab.toUpperCase())
+        this.$routerParams.tab &&
+        this.tabs.indexOf(this.$routerParams.tab.toUpperCase())
       ) {
-        this.selectedTab = $routerParams.tab.toUpperCase();
+        this.currentTab = this.$routerParams.tab.toUpperCase();
       }
 
-      this.updateScope();
-      this.changeTab(this.selectedTab);
+      this.changeTab(this.currentTab);
+    });
+
+    this.services.$scope.$on('$locationChangeSuccess', () => {
+      $timeout(() => {
+        const queryTab = this.$routerParams.tab
+          ? this.$routerParams.tab.toUpperCase()
+          : this.defaultTab;
+        if (this.selectedTab !== queryTab) {
+          this.changeTab(queryTab);
+        }
+      }, 100);
     });
   }
 
@@ -113,7 +125,10 @@ export default class ExchangeTabsCtrl {
   }
 
   changeTab(tab) {
-    const upperCaseSelectedTab = tab.toUpperCase();
+    const previousSelectedTab = this.selectedTab;
+    const upperCaseSelectedTab = tab
+      ? tab.toUpperCase()
+      : this.defaultTab.toUpperCase;
     const tabHasAName = upperCaseSelectedTab != null;
     const tabExists = includes(this.tabs, upperCaseSelectedTab);
     const tabIsMenuItem =
@@ -129,7 +144,10 @@ export default class ExchangeTabsCtrl {
       this.selectedTab = this.defaultTab;
     }
 
-    this.services.$location.search('tab', this.selectedTab);
+    if (previousSelectedTab !== this.selectedTab) {
+      this.services.$location.search('tab', this.selectedTab);
+    }
+
     this.updateScope();
   }
 }

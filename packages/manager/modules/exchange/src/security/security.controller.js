@@ -7,9 +7,10 @@ export default class ExchangeServicesConfigureCtrl {
   constructor(
     $q,
     $scope,
+    $translate,
     APIExchange,
     Exchange,
-    $translate,
+    exchangeSelectedService,
     navigation,
     messaging,
   ) {
@@ -17,8 +18,9 @@ export default class ExchangeServicesConfigureCtrl {
     this.services = {
       $scope,
       APIExchange,
-      Exchange,
       $translate,
+      Exchange,
+      exchangeSelectedService,
       navigation,
       messaging,
     };
@@ -79,6 +81,7 @@ export default class ExchangeServicesConfigureCtrl {
 
         this.originalService = clone(this.service);
         this.owaMfa = server.owaMfa;
+        this.isMfaAvailable = this.services.exchangeSelectedService.isMfaAvailable();
         return this.service;
       })
       .catch((err) => {
