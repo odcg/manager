@@ -81,6 +81,7 @@ import exchangeWizardHostedCreationEmailCreationDeleteController from './wizard-
 import exchangeWizardHostedCreationEmailCreationUpdateController from './wizard-hosted-creation/first-step/email-creation/update/update.controller';
 import exchangeWizardHostedCreationAutoController from './wizard-hosted-creation/summary/automatic/automatic.controller';
 import exchangeWizardHostedCreationManualController from './wizard-hosted-creation/summary/manual/manual.controller';
+import ExchangeServicesConfigureCtrl from './security/security.controller';
 
 const moduleName = 'Module.exchange.controllers';
 
@@ -226,6 +227,7 @@ angular
   .controller(
     'exchangeWizardHostedCreationManualController',
     exchangeWizardHostedCreationManualController,
-  );
+  )
+  .controller('ExchangeServicesConfigureCtrl', ExchangeServicesConfigureCtrl);
 
 export default moduleName;

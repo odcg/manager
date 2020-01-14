@@ -96,6 +96,7 @@ import serviceLicenseHistoryTemplate from './header/license/service-license-hist
 import headerTemplate from './header/header.html';
 import billingAccountRenewTemplate from './billing/account-renew/renew.html';
 import exchangeTemplate from './exchange.html';
+import securityTemplate from './security/security.html';
 
 export default /* @ngInject */ ($templateCache) => {
   $templateCache.put('exchange/order/order.html', orderTemplate);
@@ -448,4 +449,5 @@ export default /* @ngInject */ ($templateCache) => {
     billingAccountRenewTemplate,
   );
   $templateCache.put('exchange/exchange.html', exchangeTemplate);
+  $templateCache.put('exchange/security/security.html', securityTemplate);
 };
