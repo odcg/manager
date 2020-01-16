@@ -1,4 +1,5 @@
 import filter from 'lodash/filter';
+import find from 'lodash/find';
 import get from 'lodash/get';
 import groupBy from 'lodash/groupBy';
 import isNil from 'lodash/isNil';
@@ -18,10 +19,18 @@ import {
 
 export default class FlavorsList {
   /* @ngInject */
-  constructor($q, CucPriceHelper, OvhApiCloudProjectFlavor) {
+  constructor(
+    $q,
+    CucPriceHelper,
+    OvhApiCloudProjectFlavor,
+    OvhApiMe,
+    OvhApiOrderCatalogPublic,
+  ) {
     this.$q = $q;
     this.CucPriceHelper = CucPriceHelper;
     this.OvhApiCloudProjectFlavor = OvhApiCloudProjectFlavor;
+    this.OvhApiMe = OvhApiMe;
+    this.OvhApiOrderCatalogPublic = OvhApiOrderCatalogPublic;
   }
 
   getFlavors(serviceName, currentRegion) {
@@ -32,8 +41,17 @@ export default class FlavorsList {
           region: currentRegion,
         }).$promise,
         prices: this.CucPriceHelper.getPrices(serviceName),
+        catalog: this.OvhApiMe.v6()
+          .get()
+          .$promise.then(
+            (me) =>
+              this.OvhApiOrderCatalogPublic.v6().get({
+                productName: 'cloud',
+                ovhSubsidiary: me.ovhSubsidiary,
+              }).$promise,
+          ),
       })
-      .then(({ flavors, prices }) =>
+      .then(({ flavors, prices, catalog }) =>
         map(
           groupBy(
             flavors.filter(({ planCodes }) => !isNil(planCodes.hourly)),
@@ -42,6 +60,10 @@ export default class FlavorsList {
           (groupedFlavors) =>
             new Flavor({
               ...omit(groupedFlavors[0], ['available', 'id', 'region']),
+              addons: FlavorsList.getAddonsCount(
+                catalog,
+                groupedFlavors[0].name,
+              ),
               available: some(groupedFlavors, 'available'),
               prices: mapValues(
                 groupedFlavors[0].planCodes,
@@ -56,6 +78,21 @@ export default class FlavorsList {
             }),
         ),
       );
+  }
+
+  static getAddonsCount(catalog, name) {
+    const technicalBlob = get(
+      find(catalog.addons, {
+        invoiceName: name,
+      }),
+      'blobs.technical',
+    );
+    return (
+      get(technicalBlob, 'gpu.number', 0) ||
+      (get(technicalBlob, 'nvme')
+        ? get(technicalBlob, 'nvme.disks[0].number', 1)
+        : 0)
+    );
   }
 
   static mapByFlavorType(flavors, image) {

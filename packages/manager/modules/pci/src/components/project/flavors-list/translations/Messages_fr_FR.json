@@ -13,6 +13,9 @@
   "pci_project_flavors_spec_core_details": "{{vcores}} vCores ({{frequency}} GHz)",
   "pci_project_flavors_spec_disk": "Stockage :",
   "pci_project_flavors_spec_bandwidth": "Bande passante :",
+  "pci_project_flavors_spec_addons": "Addon :",
+  "pci_project_flavors_spec_addons_detail_single": "{{ addons }} card",
+  "pci_project_flavors_spec_addons_detail_multi": "{{ addons }} cards",
   "pci_project_flavors_spec_bandwidth_detail": "{{ bandwidth }} Mbps",
 
   "pci_project_flavors_price_hourly": "{{price}} HT/h",
